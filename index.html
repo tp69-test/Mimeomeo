@@ -19,6 +19,9 @@
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col select-none">
 
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex flex-col space-y-2 w-11/12 max-w-sm pointer-events-none"></div>
+
     <!-- Header -->
     <header class="p-4 bg-slate-900/80 backdrop-blur border-b border-slate-800 flex justify-between items-center sticky top-0 z-50">
         <h1 class="font-bold text-lg bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">Chỉ 2 Ta 💕</h1>
@@ -26,33 +29,49 @@
     </header>
 
     <!-- Main Content Container -->
-    <main class="flex-1 pb-20 max-w-md w-full mx-auto p-4">
+    <main class="flex-1 pb-24 max-w-md w-full mx-auto p-4 space-y-6">
         
         <!-- TAB 1: TRẠNG THÁI (STATUS) -->
         <div id="tab-status" class="space-y-6">
-            <!-- Đối phương card -->
-            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-pink-500/10 rounded-full blur-2xl pointer-events-none"></div>
-                <p class="text-xs uppercase tracking-wider text-slate-400 mb-2 font-medium">Trạng thái của đối phương</p>
-                <div class="flex items-center space-x-4">
-                    <div id="partner-avatar" class="w-14 h-14 rounded-full bg-pink-600/30 border border-pink-500/50 flex items-center justify-center text-2xl shadow-inner">
-                        ❤️
+            
+            <!-- Dual Status Display Cards (Giống ảnh mẫu) -->
+            <div class="grid grid-cols-2 gap-3">
+                
+                <!-- Card 1: Bạn -->
+                <div class="bg-gradient-to-br from-slate-900 to-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden flex flex-col justify-between min-h-[140px]">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-pink-500/5 rounded-full blur-xl pointer-events-none"></div>
+                    <div class="flex justify-between items-start z-10">
+                        <span id="my-card-name" class="text-[11px] font-semibold tracking-wider text-pink-400 uppercase truncate max-w-[75%]">Bạn</span>
+                        <div class="w-7 h-7 rounded-full bg-pink-600/30 border border-pink-500/40 flex items-center justify-center text-xs shadow-inner">👤</div>
                     </div>
-                    <div>
-                        <h2 id="partner-name-display" class="text-lg font-bold text-pink-300">Đang chờ kết nối...</h2>
-                        <div class="flex items-center space-x-2 mt-1">
-                            <span id="partner-icon" class="text-xl">✨</span>
-                            <p id="partner-status-display" class="text-sm text-slate-300">Chưa có cập nhật</p>
-                        </div>
+                    <div class="my-3 text-center z-10">
+                        <div id="my-card-icon" class="text-3xl mb-1">✨</div>
+                        <div id="my-card-status" class="text-xs font-medium text-slate-200 truncate">Chưa cập nhật</div>
                     </div>
+                    <span class="text-[9px] text-slate-500 text-center z-10">Trạng thái của bạn</span>
                 </div>
+
+                <!-- Card 2: Đối phương -->
+                <div class="bg-gradient-to-br from-slate-900 to-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden flex flex-col justify-between min-h-[140px]">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-xl pointer-events-none"></div>
+                    <div class="flex justify-between items-start z-10">
+                        <span id="partner-card-name" class="text-[11px] font-semibold tracking-wider text-purple-400 uppercase truncate max-w-[75%]">Đối phương</span>
+                        <div class="w-7 h-7 rounded-full bg-purple-600/30 border border-purple-500/40 flex items-center justify-center text-xs shadow-inner">❤️</div>
+                    </div>
+                    <div class="my-3 text-center z-10">
+                        <div id="partner-card-icon" class="text-3xl mb-1">✨</div>
+                        <div id="partner-card-status" class="text-xs font-medium text-slate-200 truncate">Đang chờ kết nối...</div>
+                    </div>
+                    <span class="text-[9px] text-slate-500 text-center z-10">Trạng thái đối phương</span>
+                </div>
+
             </div>
 
             <!-- Chọn trạng thái của bạn -->
             <div>
                 <p class="text-xs uppercase tracking-wider text-slate-400 mb-3 font-medium">Chọn trạng thái của bạn</p>
                 <div class="grid grid-cols-2 gap-3" id="status-grid">
-                    <!-- Status buttons will be rendered here -->
+                    <!-- Rendered by JS -->
                 </div>
             </div>
         </div>
@@ -80,10 +99,10 @@
                     <label class="text-xs text-slate-400 block mb-1">Mã phòng chung (Chia sẻ mã này cho đối phương)</label>
                     <div class="flex space-x-2">
                         <input type="text" id="room-code" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm uppercase tracking-widest font-mono text-center font-bold" placeholder="VD: LOVE99">
-                        <button onclick="createOrJoinRoom()" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-5 rounded-xl font-medium text-sm active:scale-95 transition">Kết nối</button>
+                        <button onclick="createOrJoinRoom()" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-5 rounded-xl font-medium text-sm active:scale-95 transition shadow-lg shadow-pink-500/20">Kết nối</button>
                     </div>
                 </div>
-                <p class="text-xs text-slate-500 leading-relaxed">Cả 2 thiết bị cần nhập chung một Mã phòng và chọn đúng vai trò (Một người là User A, người kia là User B) để thấy trạng thái của nhau.</p>
+                <p class="text-xs text-slate-500 leading-relaxed">Cả 2 thiết bị cần nhập chung một Mã phòng và chọn đúng vai trò để thấy trạng thái của nhau.</p>
             </div>
         </div>
 
@@ -103,14 +122,14 @@
 
     <!-- Script App Logic -->
     <script>
-        // CẤU HÌNH SUPABASE CỦA BẠN Ở ĐÂY
+        // CẤU HÌNH SUPABASE CỦA BẠN
         const SUPABASE_URL = 'https://sdwkvjqgsvapzmoylohr.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_EzXAd_z0ri8uzIMnBIqh8g_fTe8hhkv';
+        const SUPABASE_KEY = 'sb_publishable_EzXAd_z0ri8uzIMnBiqh8g_fTe8hhkv';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const statuses = [
             { text: 'Vui vẻ 😊', icon: '😊' },
-            { text: 'Đanh ngủ 😴', icon: '😴' },
+            { text: 'Đang ngủ 😴', icon: '😴' },
             { text: 'Đang chơi game 🎮', icon: '🎮' },
             { text: 'Đang bận 🛑', icon: '🛑' },
             { text: 'Nhớ bạn quá 🥺', icon: '🥺' },
@@ -122,24 +141,39 @@
         let currentRoom = localStorage.getItem('couple_room') || '';
         let myRole = localStorage.getItem('couple_role') || 'user_a';
         let myName = localStorage.getItem('couple_name') || (myRole === 'user_a' ? 'Bạn A' : 'Bạn B');
+        
+        let currentMyStatus = localStorage.getItem('my_status_text') || '';
+        let currentMyIcon = localStorage.getItem('my_status_icon') || '✨';
 
-        // Khởi tạo giao diện status buttons
-        const grid = document.getElementById('status-grid');
-        statuses.forEach(s => {
-            const btn = document.createElement('button');
-            btn.className = "flex items-center space-x-3 p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-pink-500/50 active:scale-95 transition text-left";
-            btn.innerHTML = `<span class="text-2xl">${s.icon}</span><span class="text-xs font-medium text-slate-200">${s.text}</span>`;
-            btn.onclick = () => updateMyStatus(s.text, s.icon);
-            grid.appendChild(btn);
-        });
-
-        // Load saved settings
+        // Load saved settings to inputs
         document.getElementById('room-code').value = currentRoom;
         document.getElementById('my-name').value = myName;
         document.getElementById('my-role').value = myRole;
 
+        renderStatusGrid();
+        updateMyCardDisplay();
+
         if (currentRoom) {
             initRealtime(currentRoom);
+        }
+
+        // Toast notification function
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const bgClass = type === 'success' ? 'bg-emerald-500/90 text-white border-emerald-400/50' : 'bg-pink-600/90 text-white border-pink-400/50';
+            toast.className = `pointer-events-auto px-4 py-3 rounded-2xl shadow-xl border backdrop-blur text-xs font-medium flex items-center justify-between transition-all duration-300 transform translate-y-2 opacity-0 ${bgClass}`;
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
         }
 
         function switchTab(tab) {
@@ -156,13 +190,69 @@
             }
         }
 
+        function renderStatusGrid() {
+            const grid = document.getElementById('status-grid');
+            grid.innerHTML = '';
+            statuses.forEach(s => {
+                const isSelected = currentMyStatus === s.text;
+                const btn = document.createElement('button');
+                
+                let btnClass = "flex items-center space-x-3 p-3.5 rounded-2xl bg-slate-900/80 border active:scale-95 transition text-left relative overflow-hidden ";
+                if (isSelected) {
+                    btnClass += "border-pink-500 bg-pink-500/10 ring-2 ring-pink-500/40 shadow-md shadow-pink-500/10";
+                } else {
+                    btnClass += "border-slate-800 hover:border-slate-700";
+                }
+
+                btn.className = btnClass;
+                btn.innerHTML = `
+                    <span class="text-2xl">${s.icon}</span>
+                    <span class="text-xs font-medium ${isSelected ? 'text-pink-300 font-semibold' : 'text-slate-200'}">${s.text}</span>
+                    ${isSelected ? '<span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-pink-500 animate-pulse"></span>' : ''}
+                `;
+                btn.onclick = () => handleStatusClick(s.text, s.icon);
+                grid.appendChild(btn);
+            });
+        }
+
+        async function handleStatusClick(statusText, icon) {
+            // Nếu bấm lại vào trạng thái đang chọn thì hủy chọn
+            if (currentMyStatus === statusText) {
+                currentMyStatus = '';
+                currentMyIcon = '✨';
+                localStorage.removeItem('my_status_text');
+                localStorage.removeItem('my_status_icon');
+                showToast('Đã xóa trạng thái', 'info');
+            } else {
+                currentMyStatus = statusText;
+                currentMyIcon = icon;
+                localStorage.setItem('my_status_text', statusText);
+                localStorage.setItem('my_status_icon', icon);
+                showToast('Đã cập nhật trạng thái: ' + statusText);
+                navigator.vibrate && navigator.vibrate(50);
+            }
+
+            renderStatusGrid();
+            updateMyCardDisplay();
+
+            if (currentRoom) {
+                await syncStatusToServer(currentMyStatus, currentMyIcon);
+            }
+        }
+
+        function updateMyCardDisplay() {
+            document.getElementById('my-card-name').innerText = myName || (myRole === 'user_a' ? 'Bạn A' : 'Bạn B');
+            document.getElementById('my-card-icon').innerText = currentMyStatus ? currentMyIcon : '✨';
+            document.getElementById('my-card-status').innerText = currentMyStatus || 'Chưa cập nhật';
+        }
+
         async function createOrJoinRoom() {
             currentRoom = document.getElementById('room-code').value.trim().toUpperCase();
             myRole = document.getElementById('my-role').value;
             myName = document.getElementById('my-name').value.trim() || (myRole === 'user_a' ? 'Bạn A' : 'Bạn B');
 
             if (!currentRoom) {
-                alert('Vui lòng nhập mã phòng!');
+                showToast('Vui lòng nhập mã phòng!', 'error');
                 return;
             }
 
@@ -170,43 +260,30 @@
             localStorage.setItem('couple_role', myRole);
             localStorage.setItem('couple_name', myName);
 
-            // Kiểm tra phòng đã tồn tại chưa, nếu chưa thì tạo mới
-            const { data, error } = await supabaseClient.from('couple_rooms').select('*').eq('code', currentRoom).single();
-            
+            updateMyCardDisplay();
+
+            const { data } = await supabaseClient.from('couple_rooms').select('*').eq('code', currentRoom).single();
             if (!data) {
                 await supabaseClient.from('couple_rooms').insert([{ code: currentRoom }]);
             }
 
-            // Cập nhật tên của mình lên server ngay khi kết nối
-            const updateField = myRole === 'user_a' ? { user_a_name: myName } : { user_b_name: myName };
-            await supabaseClient.from('couple_rooms').update(updateField).eq('code', currentRoom);
+            await syncStatusToServer(currentMyStatus, currentMyIcon);
 
-            alert('Kết nối thành công!');
+            showToast('Kết nối phòng thành công!');
             switchTab('status');
             initRealtime(currentRoom);
         }
 
-        async function updateMyStatus(statusText, icon) {
-            if (!currentRoom) {
-                alert('Vui lòng vào tab Cài đặt để nhập mã liên kết trước!');
-                switchTab('settings');
-                return;
-            }
-
+        async function syncStatusToServer(statusText, icon) {
+            if (!currentRoom) return;
             myRole = document.getElementById('my-role').value;
-            myName = document.getElementById('my-name').value.trim();
+            myName = document.getElementById('my-name').value.trim() || (myRole === 'user_a' ? 'Bạn A' : 'Bạn B');
 
             const updateData = myRole === 'user_a' 
                 ? { user_a_name: myName, user_a_status: statusText, user_a_icon: icon, updated_at: new Date() }
                 : { user_b_name: myName, user_b_status: statusText, user_b_icon: icon, updated_at: new Date() };
 
-            const { error } = await supabaseClient.from('couple_rooms').update(updateData).eq('code', currentRoom);
-            if (error) {
-                alert('Lỗi cập nhật trạng thái: ' + error.message);
-            } else {
-                // Hiệu ứng nhẹ báo đã share thành công
-                navigator.vibrate && navigator.vibrate(50);
-            }
+            await supabaseClient.from('couple_rooms').update(updateData).eq('code', currentRoom);
         }
 
         function initRealtime(roomCode) {
@@ -214,34 +291,39 @@
             statusBadge.innerText = 'Đã kết nối';
             statusBadge.className = "text-xs px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
 
-            // Fetch initial data
             fetchRoomData(roomCode);
 
-            // Listen realtime changes
             supabaseClient
-                .channel('room-changes')
+                .channel('room-changes-' + roomCode)
                 .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'couple_rooms', filter: `code=eq.${roomCode}` }, payload => {
-                    renderPartner(payload.new);
+                    renderCouple(payload.new);
                 })
                 .subscribe();
         }
 
         async function fetchRoomData(roomCode) {
             const { data } = await supabaseClient.from('couple_rooms').select('*').eq('code', roomCode).single();
-            if (data) renderPartner(data);
+            if (data) renderCouple(data);
         }
 
-        function renderPartner(data) {
+        function renderCouple(data) {
             myRole = document.getElementById('my-role').value;
-            // Nếu tôi là A thì hiển thị thông tin của B và ngược lại
             const isA = myRole === 'user_a';
+
+            // Dữ liệu của tôi từ server (hoặc giữ local nếu mới)
+            const myServerName = isA ? data.user_a_name : data.user_b_name;
+            if (myServerName) {
+                document.getElementById('my-card-name').innerText = myServerName;
+            }
+
+            // Dữ liệu đối phương
             const partnerName = isA ? (data.user_b_name || 'Bạn B') : (data.user_a_name || 'Bạn A');
             const partnerStatus = isA ? (data.user_b_status || 'Chưa cập nhật') : (data.user_a_status || 'Chưa cập nhật');
             const partnerIcon = isA ? (data.user_b_icon || '✨') : (data.user_a_icon || '✨');
 
-            document.getElementById('partner-name-display').innerText = partnerName;
-            document.getElementById('partner-status-display').innerText = partnerStatus;
-            document.getElementById('partner-icon').innerText = partnerIcon;
+            document.getElementById('partner-card-name').innerText = partnerName;
+            document.getElementById('partner-card-status').innerText = partnerStatus;
+            document.getElementById('partner-card-icon').innerText = partnerIcon;
         }
 
         lucide.createIcons();
