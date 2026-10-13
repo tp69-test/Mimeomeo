@@ -34,7 +34,7 @@
         <!-- TAB 1: TRẠNG THÁI (STATUS) -->
         <div id="tab-status" class="space-y-6">
             
-            <!-- Dual Status Display Cards (Giống ảnh mẫu) -->
+            <!-- Dual Status Display Cards -->
             <div class="grid grid-cols-2 gap-3">
                 
                 <!-- Card 1: Bạn -->
@@ -70,9 +70,7 @@
             <!-- Chọn trạng thái của bạn -->
             <div>
                 <p class="text-xs uppercase tracking-wider text-slate-400 mb-3 font-medium">Chọn trạng thái của bạn</p>
-                <div class="grid grid-cols-2 gap-3" id="status-grid">
-                    <!-- Rendered by JS -->
-                </div>
+                <div class="grid grid-cols-2 gap-3" id="status-grid"></div>
             </div>
         </div>
 
@@ -122,7 +120,6 @@
 
     <!-- Script App Logic -->
     <script>
-        // CẤU HÌNH SUPABASE CỦA BẠN
         const SUPABASE_URL = 'https://sdwkvjqgsvapzmoylohr.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_EzXAd_z0ri8uzIMnBiqh8g_fTe8hhkv';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -145,7 +142,6 @@
         let currentMyStatus = localStorage.getItem('my_status_text') || '';
         let currentMyIcon = localStorage.getItem('my_status_icon') || '✨';
 
-        // Load saved settings to inputs
         document.getElementById('room-code').value = currentRoom;
         document.getElementById('my-name').value = myName;
         document.getElementById('my-role').value = myRole;
@@ -155,9 +151,10 @@
 
         if (currentRoom) {
             initRealtime(currentRoom);
+        } else {
+            showToast('Chưa có mã phòng! Hãy vào Cài đặt để kết nối.', 'error');
         }
 
-        // Toast notification function
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -166,10 +163,7 @@
             toast.innerHTML = `<span>${message}</span>`;
             container.appendChild(toast);
 
-            setTimeout(() => {
-                toast.classList.remove('translate-y-2', 'opacity-0');
-            }, 10);
-
+            setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 10);
             setTimeout(() => {
                 toast.classList.add('translate-y-2', 'opacity-0');
                 setTimeout(() => toast.remove(), 300);
@@ -216,7 +210,12 @@
         }
 
         async function handleStatusClick(statusText, icon) {
-            // Nếu bấm lại vào trạng thái đang chọn thì hủy chọn
+            if (!currentRoom) {
+                showToast('Vui lòng vào tab Cài đặt để nhập mã phòng trước!', 'error');
+                switchTab('settings');
+                return;
+            }
+
             if (currentMyStatus === statusText) {
                 currentMyStatus = '';
                 currentMyIcon = '✨';
@@ -228,20 +227,18 @@
                 currentMyIcon = icon;
                 localStorage.setItem('my_status_text', statusText);
                 localStorage.setItem('my_status_icon', icon);
-                showToast('Đã cập nhật trạng thái: ' + statusText);
+                showToast('Đã cập nhật: ' + statusText);
                 navigator.vibrate && navigator.vibrate(50);
             }
 
             renderStatusGrid();
             updateMyCardDisplay();
-
-            if (currentRoom) {
-                await syncStatusToServer(currentMyStatus, currentMyIcon);
-            }
+            await syncStatusToServer(currentMyStatus, currentMyIcon);
         }
 
         function updateMyCardDisplay() {
-            document.getElementById('my-card-name').innerText = myName || (myRole === 'user_a' ? 'Bạn A' : 'Bạn B');
+            myName = document.getElementById('my-name').value.trim() || (myRole === 'user_a' ? 'Bạn A' : 'Bạn B');
+            document.getElementById('my-card-name').innerText = myName;
             document.getElementById('my-card-icon').innerText = currentMyStatus ? currentMyIcon : '✨';
             document.getElementById('my-card-status').innerText = currentMyStatus || 'Chưa cập nhật';
         }
@@ -262,10 +259,8 @@
 
             updateMyCardDisplay();
 
-            const { data } = await supabaseClient.from('couple_rooms').select('*').eq('code', currentRoom).single();
-            if (!data) {
-                await supabaseClient.from('couple_rooms').insert([{ code: currentRoom }]);
-            }
+            // Đảm bảo phòng tồn tại trong database
+            await supabaseClient.from('couple_rooms').upsert([{ code: currentRoom }], { onConflict: 'code', ignoreDuplicates: true });
 
             await syncStatusToServer(currentMyStatus, currentMyIcon);
 
@@ -279,44 +274,61 @@
             myRole = document.getElementById('my-role').value;
             myName = document.getElementById('my-name').value.trim() || (myRole === 'user_a' ? 'Bạn A' : 'Bạn B');
 
+            // Đảm bảo row tồn tại trước khi update
+            await supabaseClient.from('couple_rooms').upsert([{ code: currentRoom }], { onConflict: 'code', ignoreDuplicates: true });
+
             const updateData = myRole === 'user_a' 
                 ? { user_a_name: myName, user_a_status: statusText, user_a_icon: icon, updated_at: new Date() }
                 : { user_b_name: myName, user_b_status: statusText, user_b_icon: icon, updated_at: new Date() };
 
-            await supabaseClient.from('couple_rooms').update(updateData).eq('code', currentRoom);
+            const { error } = await supabaseClient.from('couple_rooms').update(updateData).eq('code', currentRoom);
+            if (error) {
+                showToast('Lỗi đồng bộ: ' + error.message, 'error');
+            }
         }
 
-        function initRealtime(roomCode) {
+        async function initRealtime(roomCode) {
             const statusBadge = document.getElementById('connection-status');
             statusBadge.innerText = 'Đã kết nối';
             statusBadge.className = "text-xs px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
 
-            fetchRoomData(roomCode);
+            // Đảm bảo phòng luôn tồn tại
+            await supabaseClient.from('couple_rooms').upsert([{ code: roomCode }], { onConflict: 'code', ignoreDuplicates: true });
+
+            await fetchRoomData(roomCode);
+
+            // Xóa kênh cũ tránh trùng lặp
+            supabaseClient.getChannels().forEach(c => supabaseClient.removeChannel(c));
 
             supabaseClient
                 .channel('room-changes-' + roomCode)
-                .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'couple_rooms', filter: `code=eq.${roomCode}` }, payload => {
-                    renderCouple(payload.new);
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'couple_rooms', filter: `code=eq.${roomCode}` }, payload => {
+                    if (payload.new) {
+                        renderCouple(payload.new);
+                    }
                 })
                 .subscribe();
         }
 
         async function fetchRoomData(roomCode) {
-            const { data } = await supabaseClient.from('couple_rooms').select('*').eq('code', roomCode).single();
-            if (data) renderCouple(data);
+            const { data } = await supabaseClient.from('couple_rooms').select('*').eq('code', roomCode).maybeSingle();
+            if (data) {
+                renderCouple(data);
+            }
         }
 
         function renderCouple(data) {
             myRole = document.getElementById('my-role').value;
             const isA = myRole === 'user_a';
 
-            // Dữ liệu của tôi từ server (hoặc giữ local nếu mới)
+            // Cập nhật tên của mình từ server nếu có
             const myServerName = isA ? data.user_a_name : data.user_b_name;
-            if (myServerName) {
-                document.getElementById('my-card-name').innerText = myServerName;
+            if (myServerName && !document.getElementById('my-name').value) {
+                document.getElementById('my-name').value = myServerName;
             }
+            document.getElementById('my-card-name').innerText = document.getElementById('my-name').value.trim() || (isA ? 'Bạn A' : 'Bạn B');
 
-            // Dữ liệu đối phương
+            // Hiển thị trạng thái đối phương
             const partnerName = isA ? (data.user_b_name || 'Bạn B') : (data.user_a_name || 'Bạn A');
             const partnerStatus = isA ? (data.user_b_status || 'Chưa cập nhật') : (data.user_a_status || 'Chưa cập nhật');
             const partnerIcon = isA ? (data.user_b_icon || '✨') : (data.user_a_icon || '✨');
