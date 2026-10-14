@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chỉ Hai Ta</title>
+    <title>Mimeomeo</title>
     <!-- PWA Meta tags -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ec4899">
@@ -24,8 +24,12 @@
 
     <!-- Header -->
     <header class="p-4 bg-slate-900/80 backdrop-blur border-b border-slate-800 flex justify-between items-center sticky top-0 z-50">
-        <h1 class="font-bold text-lg bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">Chỉ 2 Ta 💕</h1>
-        <div id="connection-status" class="text-xs px-2.5 py-1 rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">Chưa kết nối</div>
+        <h1 class="font-bold text-lg bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent flex items-center gap-2">
+            <i data-lucide="heart" class="w-5 h-5 text-pink-500 fill-pink-500 animate-pulse"></i> Chỉ 2 Ta 💕
+        </h1>
+        <div id="connection-status" class="text-xs px-2.5 py-1 rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-ping"></span> Chưa kết nối
+        </div>
     </header>
 
     <!-- Main Content Container -->
@@ -38,82 +42,99 @@
             <div class="grid grid-cols-2 gap-3">
                 
                 <!-- Card 1: Bạn -->
-                <div class="bg-gradient-to-br from-slate-900 to-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden flex flex-col justify-between min-h-[140px]">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-pink-500/5 rounded-full blur-xl pointer-events-none"></div>
+                <div class="bg-gradient-to-br from-slate-900/90 to-slate-900/50 border border-slate-800/80 rounded-2xl p-4 shadow-xl relative overflow-hidden flex flex-col justify-between min-h-[140px] backdrop-blur">
+                    <div class="absolute -top-10 -right-10 w-28 h-28 bg-pink-500/10 rounded-full blur-2xl pointer-events-none"></div>
                     <div class="flex justify-between items-start z-10">
-                        <span id="my-card-name" class="text-[11px] font-semibold tracking-wider text-pink-400 uppercase truncate max-w-[75%]">Bạn</span>
-                        <div class="w-7 h-7 rounded-full bg-pink-600/30 border border-pink-500/40 flex items-center justify-center text-xs shadow-inner">👤</div>
+                        <span id="my-card-name" class="text-[11px] font-bold tracking-wider text-pink-400 uppercase truncate max-w-[75%]">Bạn</span>
+                        <div class="w-7 h-7 rounded-full bg-pink-600/20 border border-pink-500/30 flex items-center justify-center text-xs text-pink-400 shadow-inner">
+                            <i data-lucide="user" class="w-3.5 h-3.5"></i>
+                        </div>
                     </div>
-                    <div class="my-3 text-center z-10">
-                        <div id="my-card-icon" class="text-3xl mb-1">✨</div>
-                        <div id="my-card-status" class="text-xs font-medium text-slate-200 truncate">Chưa cập nhật</div>
+                    <div class="my-2 text-center z-10 flex flex-col items-center">
+                        <div id="my-card-icon" class="w-10 h-10 mb-1 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400">
+                            <i data-lucide="sparkles" class="w-5 h-5"></i>
+                        </div>
+                        <div id="my-card-status" class="text-xs font-semibold text-slate-200 truncate max-w-full">Chưa cập nhật</div>
                     </div>
-                    <span class="text-[9px] text-slate-500 text-center z-10">Trạng thái của bạn</span>
+                    <span class="text-[9px] text-slate-500 text-center z-10 font-medium">Trạng thái của bạn</span>
                 </div>
 
                 <!-- Card 2: Đối phương -->
-                <div class="bg-gradient-to-br from-slate-900 to-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden flex flex-col justify-between min-h-[140px]">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-xl pointer-events-none"></div>
+                <div class="bg-gradient-to-br from-slate-900/90 to-slate-900/50 border border-slate-800/80 rounded-2xl p-4 shadow-xl relative overflow-hidden flex flex-col justify-between min-h-[140px] backdrop-blur">
+                    <div class="absolute -top-10 -right-10 w-28 h-28 bg-purple-500/10 rounded-full blur-2xl pointer-events-none"></div>
                     <div class="flex justify-between items-start z-10">
-                        <span id="partner-card-name" class="text-[11px] font-semibold tracking-wider text-purple-400 uppercase truncate max-w-[75%]">Đối phương</span>
-                        <div class="w-7 h-7 rounded-full bg-purple-600/30 border border-purple-500/40 flex items-center justify-center text-xs shadow-inner">❤️</div>
+                        <span id="partner-card-name" class="text-[11px] font-bold tracking-wider text-purple-400 uppercase truncate max-w-[75%]">Đối phương</span>
+                        <div class="w-7 h-7 rounded-full bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-xs text-purple-400 shadow-inner">
+                            <i data-lucide="heart" class="w-3.5 h-3.5"></i>
+                        </div>
                     </div>
-                    <div class="my-3 text-center z-10">
-                        <div id="partner-card-icon" class="text-3xl mb-1">✨</div>
-                        <div id="partner-card-status" class="text-xs font-medium text-slate-200 truncate">Đang chờ kết nối...</div>
+                    <div class="my-2 text-center z-10 flex flex-col items-center">
+                        <div id="partner-card-icon" class="w-10 h-10 mb-1 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                            <i data-lucide="sparkles" class="w-5 h-5"></i>
+                        </div>
+                        <div id="partner-card-status" class="text-xs font-semibold text-slate-200 truncate max-w-full">Đang chờ kết nối...</div>
                     </div>
-                    <span class="text-[9px] text-slate-500 text-center z-10">Trạng thái đối phương</span>
+                    <span class="text-[9px] text-slate-500 text-center z-10 font-medium">Trạng thái đối phương</span>
                 </div>
 
             </div>
 
             <!-- Chọn trạng thái của bạn -->
             <div>
-                <p class="text-xs uppercase tracking-wider text-slate-400 mb-3 font-medium">Chọn trạng thái của bạn</p>
+                <p class="text-xs uppercase tracking-wider text-slate-400 mb-3 font-medium flex items-center gap-1.5">
+                    <i data-lucide="smile" class="w-3.5 h-3.5 text-pink-500"></i> Chọn trạng thái của bạn
+                </p>
                 <div class="grid grid-cols-2 gap-3" id="status-grid"></div>
             </div>
         </div>
 
         <!-- TAB 2: CÀI ĐẶT & KẾT NỐI (SETTINGS) -->
         <div id="tab-settings" class="space-y-6 hidden">
-            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-4">
-                <h2 class="font-bold text-base text-pink-400 border-b border-slate-800 pb-2">Thông tin của bạn</h2>
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-4 backdrop-blur">
+                <h2 class="font-bold text-base text-pink-400 border-b border-slate-800/80 pb-2 flex items-center gap-2">
+                    <i data-lucide="user-cog" class="w-4 h-4"></i> Thông tin của bạn
+                </h2>
                 <div>
-                    <label class="text-xs text-slate-400 block mb-1">Tên của bạn</label>
-                    <input type="text" id="my-name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-500" placeholder="Nhập tên...">
+                    <label class="text-xs text-slate-400 block mb-1 font-medium">Tên của bạn</label>
+                    <input type="text" id="my-name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-500 transition" placeholder="Nhập tên...">
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400 block mb-1">Vai trò trong cặp đôi</label>
-                    <select id="my-role" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-500">
+                    <label class="text-xs text-slate-400 block mb-1 font-medium">Vai trò trong cặp đôi</label>
+                    <select id="my-role" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-500 transition">
                         <option value="user_a">Người dùng 1 (User A)</option>
                         <option value="user_b">Người dùng 2 (User B)</option>
                     </select>
                 </div>
+                <button onclick="requestNotificationPermission()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 border border-slate-700">
+                    <i data-lucide="bell" class="w-4 h-4 text-pink-400"></i> Bật thông báo đẩy trên điện thoại
+                </button>
             </div>
 
-            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-4">
-                <h2 class="font-bold text-base text-purple-400 border-b border-slate-800 pb-2">Mã liên kết đôi</h2>
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-4 backdrop-blur">
+                <h2 class="font-bold text-base text-purple-400 border-b border-slate-800/80 pb-2 flex items-center gap-2">
+                    <i data-lucide="link" class="w-4 h-4"></i> Mã liên kết đôi
+                </h2>
                 <div>
-                    <label class="text-xs text-slate-400 block mb-1">Mã phòng chung (Chia sẻ mã này cho đối phương)</label>
+                    <label class="text-xs text-slate-400 block mb-1 font-medium">Mã phòng chung (Gửi mã này cho đối phương)</label>
                     <div class="flex space-x-2">
-                        <input type="text" id="room-code" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm uppercase tracking-widest font-mono text-center font-bold" placeholder="VD: LOVE99">
-                        <button onclick="createOrJoinRoom()" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-5 rounded-xl font-medium text-sm active:scale-95 transition shadow-lg shadow-pink-500/20">Kết nối</button>
+                        <input type="text" id="room-code" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm uppercase tracking-widest font-mono text-center font-bold text-pink-400" placeholder="VD: LOVE99">
+                        <button onclick="createOrJoinRoom()" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-5 rounded-xl font-medium text-sm active:scale-95 transition shadow-lg shadow-pink-500/20 whitespace-nowrap">Kết nối</button>
                     </div>
                 </div>
-                <p class="text-xs text-slate-500 leading-relaxed">Cả 2 thiết bị cần nhập chung một Mã phòng và chọn đúng vai trò để thấy trạng thái của nhau.</p>
+                <p class="text-xs text-slate-500 leading-relaxed">Cả 2 thiết bị cần nhập chung một Mã phòng và chọn đúng vai trò để đồng bộ trạng thái thời gian thực.</p>
             </div>
         </div>
 
     </main>
 
     <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur border-t border-slate-800 py-2 px-6 flex justify-around items-center z-50 max-w-md mx-auto">
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur border-t border-slate-800 py-2.5 px-6 flex justify-around items-center z-50 max-w-md mx-auto">
         <button onclick="switchTab('status')" id="nav-status" class="flex flex-col items-center text-pink-500 transition">
-            <i data-lucide="heart" class="w-6 h-6"></i>
+            <i data-lucide="heart" class="w-5 h-5"></i>
             <span class="text-[10px] mt-1 font-medium">Trạng thái</span>
         </button>
         <button onclick="switchTab('settings')" id="nav-settings" class="flex flex-col items-center text-slate-400 transition">
-            <i data-lucide="settings" class="w-6 h-6"></i>
+            <i data-lucide="settings" class="w-5 h-5"></i>
             <span class="text-[10px] mt-1 font-medium">Cài đặt</span>
         </button>
     </nav>
@@ -125,14 +146,14 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const statuses = [
-            { text: 'Vui vẻ 😊', icon: '😊' },
-            { text: 'Đang ngủ 😴', icon: '😴' },
-            { text: 'Đang chơi game 🎮', icon: '🎮' },
-            { text: 'Đang bận 🛑', icon: '🛑' },
-            { text: 'Nhớ bạn quá 🥺', icon: '🥺' },
-            { text: 'Đang giận dỗi 😤', icon: '😤' },
-            { text: 'Đi ăn thôi 🍜', icon: '🍜' },
-            { text: 'Đang xem phim 🍿', icon: '🍿' }
+            { text: 'Vui vẻ 😊', icon: 'smile', symbol: '😊' },
+            { text: 'Đang ngủ 😴', icon: 'moon', symbol: '😴' },
+            { text: 'Chơi game 🎮', icon: 'gamepad-2', symbol: '🎮' },
+            { text: 'Đang bận 🛑', icon: 'ban', symbol: '🛑' },
+            { text: 'Nhớ bạn 🥺', icon: 'heart', symbol: '🥺' },
+            { text: 'Giận dỗi 😤', icon: 'frown', symbol: '😤' },
+            { text: 'Đi ăn thôi 🍜', icon: 'utensils', symbol: '🍜' },
+            { text: 'Xem phim 🍿', icon: 'film', symbol: '🍿' }
         ];
 
         let currentRoom = localStorage.getItem('couple_room') || '';
@@ -140,7 +161,8 @@
         let myName = localStorage.getItem('couple_name') || (myRole === 'user_a' ? 'Bạn A' : 'Bạn B');
         
         let currentMyStatus = localStorage.getItem('my_status_text') || '';
-        let currentMyIcon = localStorage.getItem('my_status_icon') || '✨';
+        let currentMyIconName = localStorage.getItem('my_status_icon_name') || 'sparkles';
+        let lastPartnerStatus = '';
 
         document.getElementById('room-code').value = currentRoom;
         document.getElementById('my-name').value = myName;
@@ -155,11 +177,68 @@
             showToast('Chưa có mã phòng! Hãy vào Cài đặt để kết nối.', 'error');
         }
 
+        // Web Audio API: Phát âm thanh tiếng tin nhắn khi đối phương đổi trạng thái
+        function playMessageSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Nốt D5
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.12); // Lên nốt A5
+                
+                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            } catch (e) {
+                console.log('Audio error:', e);
+            }
+        }
+
+        // Yêu cầu quyền thông báo đẩy trên điện thoại
+        async function requestNotificationPermission() {
+            if (!("Notification" in window)) {
+                showToast('Trình duyệt không hỗ trợ thông báo!', 'error');
+                return;
+            }
+            const permission = await Notification.requestPermission();
+            if (permission === "granted") {
+                showToast('Đã bật thông báo điện thoại thành công!');
+                new Notification("Chỉ 2 Ta 💕", {
+                    body: "Hệ thống thông báo đã sẵn sàng hoạt động!",
+                    icon: "https://img.icons8.com/color/192/hearts.png"
+                });
+            } else {
+                showToast('Bạn đã từ chối quyền thông báo.', 'info');
+            }
+        }
+
+        function showPhoneNotification(title, bodyText) {
+            if (Notification.permission === "granted") {
+                try {
+                    new Notification(title, {
+                        body: bodyText,
+                        icon: "https://img.icons8.com/color/192/hearts.png",
+                        tag: "couple-status",
+                        renotify: true
+                    });
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+        }
+
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            const bgClass = type === 'success' ? 'bg-emerald-500/90 text-white border-emerald-400/50' : 'bg-pink-600/90 text-white border-pink-400/50';
-            toast.className = `pointer-events-auto px-4 py-3 rounded-2xl shadow-xl border backdrop-blur text-xs font-medium flex items-center justify-between transition-all duration-300 transform translate-y-2 opacity-0 ${bgClass}`;
+            const bgClass = type === 'success' ? 'bg-emerald-500/90 text-white border-emerald-400/50' : (type === 'info' ? 'bg-blue-600/90 text-white border-blue-400/50' : 'bg-pink-600/90 text-white border-pink-400/50');
+            toast.className = `pointer-events-auto px-4 py-3 rounded-2xl shadow-2xl border backdrop-blur text-xs font-semibold flex items-center justify-between transition-all duration-300 transform translate-y-2 opacity-0 ${bgClass}`;
             toast.innerHTML = `<span>${message}</span>`;
             container.appendChild(toast);
 
@@ -191,56 +270,62 @@
                 const isSelected = currentMyStatus === s.text;
                 const btn = document.createElement('button');
                 
-                let btnClass = "flex items-center space-x-3 p-3.5 rounded-2xl bg-slate-900/80 border active:scale-95 transition text-left relative overflow-hidden ";
+                let btnClass = "flex items-center space-x-3 p-3.5 rounded-2xl bg-slate-900/80 border active:scale-95 transition text-left relative overflow-hidden backdrop-blur ";
                 if (isSelected) {
-                    btnClass += "border-pink-500 bg-pink-500/10 ring-2 ring-pink-500/40 shadow-md shadow-pink-500/10";
+                    btnClass += "border-pink-500 bg-pink-500/10 ring-2 ring-pink-500/40 shadow-lg shadow-pink-500/10";
                 } else {
                     btnClass += "border-slate-800 hover:border-slate-700";
                 }
 
                 btn.className = btnClass;
                 btn.innerHTML = `
-                    <span class="text-2xl">${s.icon}</span>
-                    <span class="text-xs font-medium ${isSelected ? 'text-pink-300 font-semibold' : 'text-slate-200'}">${s.text}</span>
+                    <div class="w-9 h-9 rounded-xl ${isSelected ? 'bg-pink-500/20 text-pink-400 border border-pink-500/30' : 'bg-slate-800 text-slate-300 border border-slate-700'} flex items-center justify-center transition">
+                        <i data-lucide="${s.icon}" class="w-5 h-5"></i>
+                    </div>
+                    <span class="text-xs font-semibold ${isSelected ? 'text-pink-300' : 'text-slate-200'}">${s.text}</span>
                     ${isSelected ? '<span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-pink-500 animate-pulse"></span>' : ''}
                 `;
                 btn.onclick = () => handleStatusClick(s.text, s.icon);
                 grid.appendChild(btn);
             });
+            lucide.createIcons();
         }
 
-        async function handleStatusClick(statusText, icon) {
+        async function handleStatusClick(statusText, iconName) {
             if (!currentRoom) {
-                showToast('Vui lòng vào tab Cài đặt để nhập mã phòng trước!', 'error');
+                showToast('Vui lòng vào tab Cài đặt để kết nối mã phòng trước!', 'error');
                 switchTab('settings');
                 return;
             }
 
             if (currentMyStatus === statusText) {
                 currentMyStatus = '';
-                currentMyIcon = '✨';
+                currentMyIconName = 'sparkles';
                 localStorage.removeItem('my_status_text');
-                localStorage.removeItem('my_status_icon');
+                localStorage.removeItem('my_status_icon_name');
                 showToast('Đã xóa trạng thái', 'info');
             } else {
                 currentMyStatus = statusText;
-                currentMyIcon = icon;
+                currentMyIconName = iconName;
                 localStorage.setItem('my_status_text', statusText);
-                localStorage.setItem('my_status_icon', icon);
-                showToast('Đã cập nhật: ' + statusText);
+                localStorage.setItem('my_status_icon_name', iconName);
+                showToast('Đã chọn: ' + statusText);
                 navigator.vibrate && navigator.vibrate(50);
             }
 
             renderStatusGrid();
             updateMyCardDisplay();
-            await syncStatusToServer(currentMyStatus, currentMyIcon);
+            await syncStatusToServer(currentMyStatus, currentMyIconName);
         }
 
         function updateMyCardDisplay() {
             myName = document.getElementById('my-name').value.trim() || (myRole === 'user_a' ? 'Bạn A' : 'Bạn B');
             document.getElementById('my-card-name').innerText = myName;
-            document.getElementById('my-card-icon').innerText = currentMyStatus ? currentMyIcon : '✨';
             document.getElementById('my-card-status').innerText = currentMyStatus || 'Chưa cập nhật';
+            
+            const iconContainer = document.getElementById('my-card-icon');
+            iconContainer.innerHTML = `<i data-lucide="${currentMyStatus ? currentMyIconName : 'sparkles'}" class="w-5 h-5"></i>`;
+            lucide.createIcons();
         }
 
         async function createOrJoinRoom() {
@@ -259,45 +344,36 @@
 
             updateMyCardDisplay();
 
-            // Đảm bảo phòng tồn tại trong database
             await supabaseClient.from('couple_rooms').upsert([{ code: currentRoom }], { onConflict: 'code', ignoreDuplicates: true });
-
-            await syncStatusToServer(currentMyStatus, currentMyIcon);
+            await syncStatusToServer(currentMyStatus, currentMyIconName);
 
             showToast('Kết nối phòng thành công!');
             switchTab('status');
             initRealtime(currentRoom);
         }
 
-        async function syncStatusToServer(statusText, icon) {
+        async function syncStatusToServer(statusText, iconName) {
             if (!currentRoom) return;
             myRole = document.getElementById('my-role').value;
             myName = document.getElementById('my-name').value.trim() || (myRole === 'user_a' ? 'Bạn A' : 'Bạn B');
 
-            // Đảm bảo row tồn tại trước khi update
             await supabaseClient.from('couple_rooms').upsert([{ code: currentRoom }], { onConflict: 'code', ignoreDuplicates: true });
 
             const updateData = myRole === 'user_a' 
-                ? { user_a_name: myName, user_a_status: statusText, user_a_icon: icon, updated_at: new Date() }
-                : { user_b_name: myName, user_b_status: statusText, user_b_icon: icon, updated_at: new Date() };
+                ? { user_a_name: myName, user_a_status: statusText, user_a_icon: iconName, updated_at: new Date() }
+                : { user_b_name: myName, user_b_status: statusText, user_b_icon: iconName, updated_at: new Date() };
 
-            const { error } = await supabaseClient.from('couple_rooms').update(updateData).eq('code', currentRoom);
-            if (error) {
-                showToast('Lỗi đồng bộ: ' + error.message, 'error');
-            }
+            await supabaseClient.from('couple_rooms').update(updateData).eq('code', currentRoom);
         }
 
         async function initRealtime(roomCode) {
             const statusBadge = document.getElementById('connection-status');
-            statusBadge.innerText = 'Đã kết nối';
-            statusBadge.className = "text-xs px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+            statusBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Đã kết nối';
+            statusBadge.className = "text-xs px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5";
 
-            // Đảm bảo phòng luôn tồn tại
             await supabaseClient.from('couple_rooms').upsert([{ code: roomCode }], { onConflict: 'code', ignoreDuplicates: true });
-
             await fetchRoomData(roomCode);
 
-            // Xóa kênh cũ tránh trùng lặp
             supabaseClient.getChannels().forEach(c => supabaseClient.removeChannel(c));
 
             supabaseClient
@@ -314,6 +390,8 @@
             const { data } = await supabaseClient.from('couple_rooms').select('*').eq('code', roomCode).maybeSingle();
             if (data) {
                 renderCouple(data);
+                const isA = myRole === 'user_a';
+                lastPartnerStatus = isA ? data.user_b_status : data.user_a_status;
             }
         }
 
@@ -321,21 +399,31 @@
             myRole = document.getElementById('my-role').value;
             const isA = myRole === 'user_a';
 
-            // Cập nhật tên của mình từ server nếu có
             const myServerName = isA ? data.user_a_name : data.user_b_name;
             if (myServerName && !document.getElementById('my-name').value) {
                 document.getElementById('my-name').value = myServerName;
             }
             document.getElementById('my-card-name').innerText = document.getElementById('my-name').value.trim() || (isA ? 'Bạn A' : 'Bạn B');
 
-            // Hiển thị trạng thái đối phương
-            const partnerName = isA ? (data.user_b_name || 'Bạn B') : (data.user_a_name || 'Bạn A');
+            const partnerName = isA ? (data.user_b_name || 'Đối phương') : (data.user_a_name || 'Đối phương');
             const partnerStatus = isA ? (data.user_b_status || 'Chưa cập nhật') : (data.user_a_status || 'Chưa cập nhật');
-            const partnerIcon = isA ? (data.user_b_icon || '✨') : (data.user_a_icon || '✨');
+            const partnerIcon = isA ? (data.user_b_icon || 'sparkles') : (data.user_a_icon || 'sparkles');
+
+            // Kiểm tra nếu đối phương thay đổi trạng thái thì phát âm thanh & hiện thông báo
+            if (lastPartnerStatus !== partnerStatus && lastPartnerStatus !== '') {
+                playMessageSound();
+                showPhoneNotification(`Trạng thái mới từ ${partnerName}`, `${partnerName}: ${partnerStatus}`);
+                showToast(`${partnerName} vừa đổi trạng thái: ${partnerStatus}`, 'info');
+            }
+            lastPartnerStatus = partnerStatus;
 
             document.getElementById('partner-card-name').innerText = partnerName;
             document.getElementById('partner-card-status').innerText = partnerStatus;
-            document.getElementById('partner-card-icon').innerText = partnerIcon;
+            
+            const partnerIconContainer = document.getElementById('partner-card-icon');
+            partnerIconContainer.innerHTML = `<i data-lucide="${partnerIcon}" class="w-5 h-5"></i>`;
+            
+            lucide.createIcons();
         }
 
         lucide.createIcons();
