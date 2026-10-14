@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mimeomeo</title>
+    <title>Chỉ Hai Ta</title>
     <!-- PWA Meta tags -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ec4899">
@@ -141,8 +141,8 @@
 
     <!-- Script App Logic -->
     <script>
-        const SUPABASE_URL = 'https://sdwkvjqgsvapzmoylohr.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_EzXAd_z0ri8uzIMnBiqh8g_fTe8hhkv';
+        const SUPABASE_URL = 'https://sdwkvjqgsvapzmoylohr.supabase.co/rest/v1/';
+        const SUPABASE_KEY = 'sb_publishable_EzXAd_z0ri8uzIMnBIqh8g_fTe8hhkv';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const statuses = [
@@ -163,6 +163,7 @@
         let currentMyStatus = localStorage.getItem('my_status_text') || '';
         let currentMyIconName = localStorage.getItem('my_status_icon_name') || 'sparkles';
         let lastPartnerStatus = '';
+        let pollInterval = null;
 
         document.getElementById('room-code').value = currentRoom;
         document.getElementById('my-name').value = myName;
@@ -177,7 +178,6 @@
             showToast('Chưa có mã phòng! Hãy vào Cài đặt để kết nối.', 'error');
         }
 
-        // Web Audio API: Phát âm thanh tiếng tin nhắn khi đối phương đổi trạng thái
         function playMessageSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -185,8 +185,8 @@
                 const gain = audioCtx.createGain();
                 
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Nốt D5
-                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.12); // Lên nốt A5
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.12);
                 
                 gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
@@ -201,7 +201,6 @@
             }
         }
 
-        // Yêu cầu quyền thông báo đẩy trên điện thoại
         async function requestNotificationPermission() {
             if (!("Notification" in window)) {
                 showToast('Trình duyệt không hỗ trợ thông báo!', 'error');
@@ -374,8 +373,10 @@
             await supabaseClient.from('couple_rooms').upsert([{ code: roomCode }], { onConflict: 'code', ignoreDuplicates: true });
             await fetchRoomData(roomCode);
 
+            // Xóa subscription cũ nếu có
             supabaseClient.getChannels().forEach(c => supabaseClient.removeChannel(c));
 
+            // Đăng ký realtime qua WebSocket
             supabaseClient
                 .channel('room-changes-' + roomCode)
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'couple_rooms', filter: `code=eq.${roomCode}` }, payload => {
@@ -384,14 +385,18 @@
                     }
                 })
                 .subscribe();
+
+            // CƠ CHẾ DỰ PHÒNG: Tự động tải lại dữ liệu mỗi 3 giây (tránh trường hợp mất kết nối WebSocket trên mobile)
+            if (pollInterval) clearInterval(pollInterval);
+            pollInterval = setInterval(() => {
+                fetchRoomData(roomCode);
+            }, 3000);
         }
 
         async function fetchRoomData(roomCode) {
             const { data } = await supabaseClient.from('couple_rooms').select('*').eq('code', roomCode).maybeSingle();
             if (data) {
                 renderCouple(data);
-                const isA = myRole === 'user_a';
-                lastPartnerStatus = isA ? data.user_b_status : data.user_a_status;
             }
         }
 
@@ -410,7 +415,7 @@
             const partnerIcon = isA ? (data.user_b_icon || 'sparkles') : (data.user_a_icon || 'sparkles');
 
             // Kiểm tra nếu đối phương thay đổi trạng thái thì phát âm thanh & hiện thông báo
-            if (lastPartnerStatus !== partnerStatus && lastPartnerStatus !== '') {
+            if (lastPartnerStatus !== partnerStatus && lastPartnerStatus !== '' && lastPartnerStatus !== 'Chưa cập nhật') {
                 playMessageSound();
                 showPhoneNotification(`Trạng thái mới từ ${partnerName}`, `${partnerName}: ${partnerStatus}`);
                 showToast(`${partnerName} vừa đổi trạng thái: ${partnerStatus}`, 'info');
