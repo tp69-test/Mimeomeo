@@ -141,8 +141,8 @@
 
     <!-- Script App Logic -->
     <script>
-        const SUPABASE_URL = 'https://sdwkvjqgsvapzmoylohr.supabase.co/rest/v1/';
-        const SUPABASE_KEY = 'sb_publishable_EzXAd_z0ri8uzIMnBIqh8g_fTe8hhkv';
+        const SUPABASE_URL = 'https://sdwkvjqgsvapzmoylohr.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_EzXAd_z0ri8uzIMnBiqh8g_fTe8hhkv';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const statuses = [
@@ -343,7 +343,12 @@
 
             updateMyCardDisplay();
 
-            await supabaseClient.from('couple_rooms').upsert([{ code: currentRoom }], { onConflict: 'code', ignoreDuplicates: true });
+            const { error } = await supabaseClient.from('couple_rooms').upsert([{ code: currentRoom }], { onConflict: 'code', ignoreDuplicates: true });
+            if (error) {
+                showToast('Lỗi tạo phòng: ' + error.message, 'error');
+                return;
+            }
+
             await syncStatusToServer(currentMyStatus, currentMyIconName);
 
             showToast('Kết nối phòng thành công!');
@@ -356,13 +361,14 @@
             myRole = document.getElementById('my-role').value;
             myName = document.getElementById('my-name').value.trim() || (myRole === 'user_a' ? 'Bạn A' : 'Bạn B');
 
-            await supabaseClient.from('couple_rooms').upsert([{ code: currentRoom }], { onConflict: 'code', ignoreDuplicates: true });
-
             const updateData = myRole === 'user_a' 
                 ? { user_a_name: myName, user_a_status: statusText, user_a_icon: iconName, updated_at: new Date() }
                 : { user_b_name: myName, user_b_status: statusText, user_b_icon: iconName, updated_at: new Date() };
 
-            await supabaseClient.from('couple_rooms').update(updateData).eq('code', currentRoom);
+            const { error } = await supabaseClient.from('couple_rooms').update(updateData).eq('code', currentRoom);
+            if (error) {
+                showToast('Lỗi đồng bộ: ' + error.message, 'error');
+            }
         }
 
         async function initRealtime(roomCode) {
@@ -370,13 +376,10 @@
             statusBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Đã kết nối';
             statusBadge.className = "text-xs px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5";
 
-            await supabaseClient.from('couple_rooms').upsert([{ code: roomCode }], { onConflict: 'code', ignoreDuplicates: true });
             await fetchRoomData(roomCode);
 
-            // Xóa subscription cũ nếu có
             supabaseClient.getChannels().forEach(c => supabaseClient.removeChannel(c));
 
-            // Đăng ký realtime qua WebSocket
             supabaseClient
                 .channel('room-changes-' + roomCode)
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'couple_rooms', filter: `code=eq.${roomCode}` }, payload => {
@@ -386,7 +389,6 @@
                 })
                 .subscribe();
 
-            // CƠ CHẾ DỰ PHÒNG: Tự động tải lại dữ liệu mỗi 3 giây (tránh trường hợp mất kết nối WebSocket trên mobile)
             if (pollInterval) clearInterval(pollInterval);
             pollInterval = setInterval(() => {
                 fetchRoomData(roomCode);
@@ -394,7 +396,11 @@
         }
 
         async function fetchRoomData(roomCode) {
-            const { data } = await supabaseClient.from('couple_rooms').select('*').eq('code', roomCode).maybeSingle();
+            const { data, error } = await supabaseClient.from('couple_rooms').select('*').eq('code', roomCode).maybeSingle();
+            if (error) {
+                console.error("Fetch error:", error);
+                return;
+            }
             if (data) {
                 renderCouple(data);
             }
@@ -414,8 +420,7 @@
             const partnerStatus = isA ? (data.user_b_status || 'Chưa cập nhật') : (data.user_a_status || 'Chưa cập nhật');
             const partnerIcon = isA ? (data.user_b_icon || 'sparkles') : (data.user_a_icon || 'sparkles');
 
-            // Kiểm tra nếu đối phương thay đổi trạng thái thì phát âm thanh & hiện thông báo
-            if (lastPartnerStatus !== partnerStatus && lastPartnerStatus !== '' && lastPartnerStatus !== 'Chưa cập nhật') {
+            if (lastPartnerStatus !== partnerStatus && lastPartnerStatus !== '' && lastPartnerStatus !== 'Chưa cập nhật' && partnerStatus !== 'Chưa cập nhật') {
                 playMessageSound();
                 showPhoneNotification(`Trạng thái mới từ ${partnerName}`, `${partnerName}: ${partnerStatus}`);
                 showToast(`${partnerName} vừa đổi trạng thái: ${partnerStatus}`, 'info');
